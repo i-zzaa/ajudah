@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import { login } from '../../services/auth';
 
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,27 +11,23 @@ import Icon from '@material-ui/core/Icon';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 // @material-ui/icons
-import Timeline from '@material-ui/icons/Timeline';
-import Code from '@material-ui/icons/Code';
-import Group from '@material-ui/icons/Group';
-import Face from '@material-ui/icons/Face';
-import Email from '@material-ui/icons/Email'; //
-import PictureInPicture from '@material-ui/icons/PictureInPicture';
-import PictureInPictureAlt from '@material-ui/icons/PictureInPictureAlt';
+import Email from '@material-ui/icons/Email';
 
 // import LockOutline from "@material-ui/icons/LockOutline";
 import Check from '@material-ui/icons/Check';
 
 // core components
-import GridContainer from 'components/Grid/GridContainer.js';
-import GridItem from 'components/Grid/GridItem.js';
-import Button from 'components/CustomButtons/Button.js';
-import CustomInput from 'components/CustomInput/CustomInput.js';
-import InfoArea from 'components/InfoArea/InfoArea.js';
-import Card from 'components/Card/Card.js';
-import CardBody from 'components/Card/CardBody.js';
+import GridContainer from '@/components/Grid/GridContainer';
+import GridItem from '@/components/Grid/GridItem';
+import Button from '@/components/CustomButtons/Button';
+import CustomInput from '@/components/CustomInput/CustomInput';
+import InfoArea from '@/components/InfoArea/InfoArea';
+import Card from '@/components/Card/Card';
+import CardBody from '@/components/Card/CardBody';
 
-import styles from 'assets/jss/material-dashboard-pro-react/views/registerPageStyle';
+import styles from '@/assets/jss/material-dashboard-pro-react/views/registerPageStyle';
+import { login } from '../../services/auth';
+import api from '../../services/api';
 
 const useStyles = makeStyles(styles);
 
@@ -86,7 +80,7 @@ export default function RegisterPage() {
               history.push('/auth/login-page');
             }}
             onCancel={() => hideAlert()}
-            confirmBtnCssClass={classes.button + ' ' + classes.success}
+            confirmBtnCssClass={`${classes.button} ${classes.success}`}
           >
             Você será direcinado o login
           </SweetAlert>,
@@ -100,7 +94,7 @@ export default function RegisterPage() {
             onConfirm={() => {
               hideAlert();
             }}
-            confirmBtnCssClass={classes.button + ' ' + classes.error}
+            confirmBtnCssClass={`${classes.button} ${classes.error}`}
           >
             Tente novamente
           </SweetAlert>,

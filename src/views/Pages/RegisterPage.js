@@ -4,42 +4,23 @@ import { useHistory, useParams } from 'react-router-dom';
 
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Icon from '@material-ui/core/Icon';
 import SweetAlert from 'react-bootstrap-sweetalert';
-
-// @material-ui/icons
-import Timeline from '@material-ui/icons/Timeline';
-import Code from '@material-ui/icons/Code';
-import Group from '@material-ui/icons/Group';
-import Face from '@material-ui/icons/Face';
-import Email from '@material-ui/icons/Email'; //
-import PictureInPicture from '@material-ui/icons/PictureInPicture';
-import PictureInPictureAlt from '@material-ui/icons/PictureInPictureAlt';
 
 // import LockOutline from "@material-ui/icons/LockOutline";
 import Check from '@material-ui/icons/Check';
 
 // core components
-import GridContainer from 'components/Grid/GridContainer.js';
-import GridItem from 'components/Grid/GridItem.js';
-import Button from 'components/CustomButtons/Button.js';
-import CustomInput from 'components/CustomInput/CustomInput.js';
-import InfoArea from 'components/InfoArea/InfoArea.js';
-import Card from 'components/Card/Card.js';
-import CardBody from 'components/Card/CardBody.js';
-
-import styles from 'assets/jss/material-dashboard-pro-react/views/registerPageStyle';
-import Wizard from 'components/Wizard/Wizard.js';
-import { login } from '../../services/auth';
-import api from '../../services/api';
+import GridContainer from '@/components/Grid/GridContainer';
+import GridItem from '@/components/Grid/GridItem';
+import styles from '@/assets/jss/material-dashboard-pro-react/views/registerPageStyle';
+import Wizard from '@/components/Wizard/Wizard';
+import { login } from '@/services/auth';
+import api from '@/services/api';
 
 // core components
 
-import Step1 from './WizardSteps/Step1.js';
-import Step2 from './WizardSteps/Step2.js';
+import Step1 from '@/views/Pages/WizardSteps/Step1';
+import Step2 from '@/views/Pages/WizardSteps/Step2';
 
 const useStyles = makeStyles(styles);
 
