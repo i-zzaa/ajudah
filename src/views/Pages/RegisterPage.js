@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import { login } from '../../services/auth';
 
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,6 +32,14 @@ import Card from 'components/Card/Card.js';
 import CardBody from 'components/Card/CardBody.js';
 
 import styles from 'assets/jss/material-dashboard-pro-react/views/registerPageStyle';
+import Wizard from 'components/Wizard/Wizard.js';
+import { login } from '../../services/auth';
+import api from '../../services/api';
+
+// core components
+
+import Step1 from './WizardSteps/Step1.js';
+import Step2 from './WizardSteps/Step2.js';
 
 const useStyles = makeStyles(styles);
 
@@ -86,7 +92,7 @@ export default function RegisterPage() {
               history.push('/auth/login-page');
             }}
             onCancel={() => hideAlert()}
-            confirmBtnCssClass={classes.button + ' ' + classes.success}
+            confirmBtnCssClass={`${classes.button} ${classes.success}`}
           >
             Você será direcinado o login
           </SweetAlert>,
@@ -100,7 +106,7 @@ export default function RegisterPage() {
             onConfirm={() => {
               hideAlert();
             }}
-            confirmBtnCssClass={classes.button + ' ' + classes.error}
+            confirmBtnCssClass={`${classes.button} ${classes.error}`}
           >
             Tente novamente
           </SweetAlert>,
@@ -113,203 +119,25 @@ export default function RegisterPage() {
   return (
     <div className={classes.container}>
       <GridContainer justify="center">
-        <GridItem xs={12} sm={12} md={10}>
-          <Card className={classes.cardSignup}>
-            <h2 className={classes.cardTitle}>Associe-se</h2>
-            <CardBody>
-              <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
-                <GridContainer justify="center">
-                  <GridItem xs={12} sm={12} md={5}>
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, username: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <Face className={classes.inputAdornmentIcon} />
-                          </InputAdornment>
-                        ),
-                        placeholder: 'Nome ...',
-                      }}
-                    />
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, cpf: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <PictureInPicture
-                              className={classes.inputAdornmentIcon}
-                            />
-                          </InputAdornment>
-                        ),
-                        placeholder: 'Número de telefone...',
-                      }}
-                    />
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, password: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <Icon className={classes.inputAdornmentIcon}>
-                              lock_outline
-                            </Icon>
-                          </InputAdornment>
-                        ),
-                        placeholder: 'Senha...',
-                      }}
-                    />
-                    <FormControlLabel
-                      classes={{
-                        root: classes.checkboxLabelControl,
-                        label: classes.checkboxLabel,
-                      }}
-                      control={
-                        <Checkbox
-                          tabIndex={-1}
-                          onClick={() => handleToggle(1)}
-                          checkedIcon={
-                            <Check className={classes.checkedIcon} />
-                          }
-                          icon={<Check className={classes.uncheckedIcon} />}
-                          classes={{
-                            checked: classes.checked,
-                            root: classes.checkRoot,
-                          }}
-                        />
-                      }
-                      label={
-                        <span>
-                          <a href="#">Aceito receber notícias por e-mail</a>.
-                        </span>
-                      }
-                    />
-                    <FormControlLabel
-                      classes={{
-                        root: classes.checkboxLabelControl,
-                        label: classes.checkboxLabel,
-                      }}
-                      control={
-                        <Checkbox
-                          tabIndex={-1}
-                          onClick={() => handleToggle(1)}
-                          checkedIcon={
-                            <Check className={classes.checkedIcon} />
-                          }
-                          icon={<Check className={classes.uncheckedIcon} />}
-                          classes={{
-                            checked: classes.checked,
-                            root: classes.checkRoot,
-                          }}
-                        />
-                      }
-                      label={
-                        <span>
-                          <a href="#">*Termos e Condições</a>.
-                        </span>
-                      }
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={8} md={5}>
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, email: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <Email className={classes.inputAdornmentIcon} />
-                          </InputAdornment>
-                        ),
-                        placeholder: 'Email...',
-                      }}
-                    />
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, cpf: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <PictureInPicture
-                              className={classes.inputAdornmentIcon}
-                            />
-                          </InputAdornment>
-                        ),
-                        placeholder: 'CPF...',
-                      }}
-                    />
-                    <CustomInput
-                      formControlProps={{
-                        fullWidth: true,
-                        className: classes.customFormControlClasses,
-                      }}
-                      onChange={(e) =>
-                        setForms({ ...forms, password: e.target.value })
-                      }
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment
-                            position="start"
-                            className={classes.inputAdornment}
-                          >
-                            <Icon className={classes.inputAdornmentIcon}>
-                              lock_outline
-                            </Icon>
-                          </InputAdornment>
-                        ),
-                        placeholder: 'Confirme a senha...',
-                      }}
-                    />
-                    <div className={classes.center}>
-                      <Button type="submit" round color="primary">
-                        Cadastre-se
-                      </Button>
-                    </div>
-                  </GridItem>
-                </GridContainer>
-              </form>
-            </CardBody>
-          </Card>
+        <GridItem xs={12} sm={8}>
+          <Wizard
+            validate
+            steps={[
+              {
+                stepName: 'Cadastro',
+                stepComponent: Step1,
+                stepId: 'cadastro',
+              },
+              {
+                stepName: 'Pagamento',
+                stepComponent: Step2,
+                stepId: 'pagamento',
+              },
+            ]}
+            title="Associe-se"
+            subtitle="."
+            finishButtonClick={(e) => alert(e)}
+          />
         </GridItem>
       </GridContainer>
       {alert}
