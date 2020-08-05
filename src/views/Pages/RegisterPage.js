@@ -107,7 +107,7 @@ export default function RegisterPage() {
             finishButtonClick={(e, form) => onSubmit(e, form)}
             classes
             previousButtonText="Anterior"
-            nextButtonText="Pŕoximo"
+            nextButtonText="Próximo"
             finishButtonText="Enviar"
           />
         </GridItem>
