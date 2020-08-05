@@ -10,7 +10,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 
-import styles from 'assets/jss/material-dashboard-pro-react/components/customInputStyle.js';
+import styles from '@/assets/jss/material-dashboard-pro-react/components/customInputStyle';
 
 const useStyles = makeStyles(styles);
 
@@ -28,11 +28,12 @@ export default function CustomInput(props) {
     success,
     helperText,
     onChange,
+    onFocus,
   } = props;
 
   const labelClasses = classNames({
-    [' ' + classes.labelRootError]: error,
-    [' ' + classes.labelRootSuccess]: success && !error,
+    [` ${classes.labelRootError}`]: error,
+    [` ${classes.labelRootSuccess}`]: success && !error,
   });
   const underlineClasses = classNames({
     [classes.underlineError]: error,
@@ -47,7 +48,7 @@ export default function CustomInput(props) {
     [classes.input]: true,
     [classes.whiteInput]: white,
   });
-  var formControlClasses;
+  let formControlClasses;
   if (formControlProps !== undefined) {
     formControlClasses = classNames(
       formControlProps.className,
@@ -56,11 +57,11 @@ export default function CustomInput(props) {
   } else {
     formControlClasses = classes.formControl;
   }
-  var helpTextClasses = classNames({
+  const helpTextClasses = classNames({
     [classes.labelRootError]: error,
     [classes.labelRootSuccess]: success && !error,
   });
-  let newInputProps = {
+  const newInputProps = {
     maxLength:
       inputProps && inputProps.maxLength ? inputProps.maxLength : undefined,
     minLength:
@@ -79,11 +80,16 @@ export default function CustomInput(props) {
     if (onChange) onChange(e);
   };
 
+  const handleFocus = (e) => {
+    e.preventDefault();
+    if (onFocus) onFocus(e);
+  };
+
   return (
     <FormControl {...formControlProps} className={formControlClasses}>
       {labelText !== undefined ? (
         <InputLabel
-          className={classes.labelRoot + ' ' + labelClasses}
+          className={`${classes.labelRoot} ${labelClasses}`}
           htmlFor={id}
           {...labelProps}
         >
@@ -101,9 +107,10 @@ export default function CustomInput(props) {
         {...inputProps}
         inputProps={newInputProps}
         onChange={(e) => handleChange(e)}
+        onFocus={(e) => handleFocus(e)}
       />
       {helperText !== undefined ? (
-        <FormHelperText id={id + '-text'} className={helpTextClasses}>
+        <FormHelperText id={`${id}-text`} className={helpTextClasses}>
           {helperText}
         </FormHelperText>
       ) : null}
@@ -123,4 +130,5 @@ CustomInput.propTypes = {
   white: PropTypes.bool,
   helperText: PropTypes.node,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
 };

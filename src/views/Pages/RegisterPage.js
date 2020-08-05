@@ -87,7 +87,7 @@ export default function RegisterPage() {
   return (
     <div className={classes.container}>
       <GridContainer justify="center">
-        <GridItem xs={12} sm={8}>
+        <GridItem xs={12} sm={10}>
           <Wizard
             validate
             steps={[

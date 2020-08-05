@@ -16,6 +16,8 @@ import GridContainer from '@/components/Grid/GridContainer';
 import GridItem from '@/components/Grid/GridItem';
 import PictureUpload from '@/components/CustomUpload/PictureUpload';
 import CustomInput from '@/components/CustomInput/CustomInput';
+import Cards from 'react-credit-cards';
+import 'react-credit-cards/es/styles-compiled.css';
 
 const style = {
   infoText: {
@@ -37,9 +39,13 @@ export default function Step2() {
     numero: '',
     titular: '',
     cpf: '',
-    cpf: '',
     vencimento: '',
     codigo: '',
+    cvc: '',
+    expiry: '',
+    focus: '',
+    name: '',
+    number: '',
   });
   const classes = useStyles();
 
@@ -65,6 +71,8 @@ export default function Step2() {
   };
 
   const change = (event, stateName, type, stateNameEqualTo) => {
+    if (!Object.keys(event).length) return;
+
     switch (type) {
       case 'email':
         if (verifyEmail(event.target.value)) {
@@ -83,7 +91,7 @@ export default function Step2() {
       default:
         break;
     }
-    setForm({ [stateName]: event.target.value });
+    setForm({ ...form, [stateName]: event.target.value });
   };
 
   const isValidated = () => {
@@ -109,7 +117,16 @@ export default function Step2() {
 
   return (
     <GridContainer justify="center">
-      <GridItem xs={12} sm={5}>
+      <div id="PaymentForm">
+        <Cards
+          cvc={form.cvc}
+          expiry={form.expiry}
+          focused={form.focus}
+          name={form.name}
+          number={form.number}
+        />
+      </div>
+      <GridItem xs={12} sm={4}>
         <CustomInput
           success={form.numeroState === 'success'}
           error={form.numeroState === 'error'}
@@ -118,12 +135,15 @@ export default function Step2() {
               Número do cartão <small>(obrigatório)</small>
             </span>
           }
-          id="nome"
+          type="tel"
+          name="number"
           formControlProps={{
             fullWidth: true,
           }}
+          onChange={(e) => setForm({ ...form, number: e.target.value })}
+          onFocus={(e) => setForm({ ...form, focus: 'number' })}
           inputProps={{
-            onChange: (event) => change(event, 'numero', 'length', 256),
+            name: 'number',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>
                 <CreditCard className={classes.inputAdornmentIcon} />
@@ -136,18 +156,21 @@ export default function Step2() {
           error={form.cpfState === 'error'}
           labelText={
             <span>
-              CPF do titular <small>(obrigatório)</small>
+              Titular do cartão <small>(obrigatório)</small>
             </span>
           }
-          id="telefone"
+          id="name"
+          type="tel"
           formControlProps={{
             fullWidth: true,
           }}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onFocus={(e) => setForm({ ...form, focus: 'name' })}
           inputProps={{
-            onChange: (event) => change(event, 'cpf', 'length', 11),
+            name: 'name',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>
-                <RecentActors className={classes.inputAdornmentIcon} />
+                <Face className={classes.inputAdornmentIcon} />
               </InputAdornment>
             ),
           }}
@@ -158,46 +181,26 @@ export default function Step2() {
           error={form.codState === 'error'}
           labelText={
             <span>
-              Código <small>(obrigatório)</small>
+              CPF <small>(obrigatório)</small>
             </span>
           }
-          id="password"
+          id="cpf"
+          onChange={(e) => setForm({ ...form, cpf: e.target.value })}
+          onFocus={(e) => setForm({ ...form, focus: 'cpf' })}
           formControlProps={{
             fullWidth: true,
           }}
           inputProps={{
-            onChange: (event) => change(event, 'password', 'password'),
+            name: 'cpf',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>
-                <PictureInPictureAlt className={classes.inputAdornmentIcon} />
+                <RecentActors className={classes.inputAdornmentIcon} />
               </InputAdornment>
             ),
           }}
         />
       </GridItem>
-      <GridItem xs={12} sm={5}>
-        <CustomInput
-          success={form.titularState === 'success'}
-          error={form.titularState === 'error'}
-          labelText={
-            <span>
-              Titular do cartão <small>(obrigatório)</small>
-            </span>
-          }
-          id="nome"
-          formControlProps={{
-            fullWidth: true,
-          }}
-          inputProps={{
-            onChange: (event) => change(event, 'titular', 'length', 256),
-            endAdornment: (
-              <InputAdornment position="end" className={classes.inputAdornment}>
-                <Face className={classes.inputAdornmentIcon} />
-              </InputAdornment>
-            ),
-          }}
-        />
-
+      <GridItem xs={12} sm={3}>
         <CustomInput
           success={form.vencimentoState === 'success'}
           error={form.vencimentoState === 'error'}
@@ -206,15 +209,41 @@ export default function Step2() {
               Vencimento <small>(obrigatório)</small>
             </span>
           }
-          id="cpf"
+          id="expiry"
           formControlProps={{
             fullWidth: true,
           }}
+          onChange={(e) => setForm({ ...form, expiry: e.target.value })}
+          onFocus={(e) => setForm({ ...form, focus: 'expiry' })}
           inputProps={{
-            onChange: (event) => change(event, 'vencimento', 'length', 11),
+            name: 'expiry',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>
                 <Today className={classes.inputAdornmentIcon} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <CustomInput
+          success={form.titularState === 'success'}
+          error={form.titularState === 'error'}
+          labelText={
+            <span>
+              Código do cartão <small>(obrigatório)</small>
+            </span>
+          }
+          id="cvc"
+          onChange={(e) => setForm({ ...form, cvc: e.target.value })}
+          onFocus={(e) => setForm({ ...form, focus: 'cvc' })}
+          formControlProps={{
+            fullWidth: true,
+            name: 'cvc',
+          }}
+          inputProps={{
+            name: 'cvc',
+            endAdornment: (
+              <InputAdornment position="end" className={classes.inputAdornment}>
+                <PictureInPictureAlt className={classes.inputAdornmentIcon} />
               </InputAdornment>
             ),
           }}
