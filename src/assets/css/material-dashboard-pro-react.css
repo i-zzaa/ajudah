@@ -3067,7 +3067,7 @@ img {
   -webkit-transition: all 0.2s;
 }
 .picture-container .picture:hover {
-  border-color: #e91e63;
+  border-color: #00acc1;
 }
 .picture-container .picture input[type='file'] {
   cursor: pointer;

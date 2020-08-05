@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
@@ -99,55 +100,39 @@ class Wizard extends React.Component {
   }
 
   nextButtonClick() {
-    if (
-      (this.props.validate &&
-        ((this[this.props.steps[this.state.currentStep].stepId].isValidated !==
-          undefined &&
-          this[
-            this.props.steps[this.state.currentStep].stepId
-          ].isValidated()) ||
-          this[this.props.steps[this.state.currentStep].stepId].isValidated ===
-            undefined)) ||
-      this.props.validate === undefined
-    ) {
-      if (
-        this[this.props.steps[this.state.currentStep].stepId].sendState !==
-        undefined
-      ) {
-        this.setState({
-          allStates: {
-            ...this.state.allStates,
-            [this.props.steps[this.state.currentStep].stepId]: this[
-              this.props.steps[this.state.currentStep].stepId
-            ].sendState(),
-          },
-        });
-      }
-      const key = this.state.currentStep + 1;
-      this.setState({
-        currentStep: key,
-        nextButton: this.props.steps.length > key + 1,
-        previousButton: key > 0,
-        finishButton: this.props.steps.length === key + 1,
-      });
-      this.refreshAnimation(key);
-    }
+    // this.setState({
+    //   allStates: {
+    //     ...this.state.allStates,
+    //     [this.props.steps[this.state.currentStep].stepId]: this[
+    //       this.props.steps[this.state.currentStep].stepId
+    //     ],
+    //   },
+    // });
+
+    const key = this.state.currentStep + 1;
+    this.setState({
+      currentStep: key,
+      nextButton: this.props.steps.length > key + 1,
+      previousButton: key > 0,
+      finishButton: this.props.steps.length === key + 1,
+    });
+    this.refreshAnimation(key);
   }
 
   previousButtonClick() {
-    if (
-      this[this.props.steps[this.state.currentStep].stepId].sendState !==
-      undefined
-    ) {
-      this.setState({
-        allStates: {
-          ...this.state.allStates,
-          [this.props.steps[this.state.currentStep].stepId]: this[
-            this.props.steps[this.state.currentStep].stepId
-          ].sendState(),
-        },
-      });
-    }
+    // if (
+    //   this[this.props.steps[this.state.currentStep].stepId].sendState !==
+    //   undefined
+    // ) {
+    //   this.setState({
+    //     allStates: {
+    //       ...this.state.allStates,
+    //       [this.props.steps[this.state.currentStep].stepId]: this[
+    //         this.props.steps[this.state.currentStep].stepId
+    //       ].sendState(),
+    //     },
+    //   });
+    // }
     const key = this.state.currentStep - 1;
     if (key >= 0) {
       this.setState({
@@ -161,33 +146,33 @@ class Wizard extends React.Component {
   }
 
   finishButtonClick() {
-    if (
-      (this.props.validate === false &&
-        this.props.finishButtonClick !== undefined) ||
-      (this.props.validate &&
-        ((this[this.props.steps[this.state.currentStep].stepId].isValidated !==
-          undefined &&
-          this[
+    // if (
+    //   (this.props.validate === false &&
+    //     this.props.finishButtonClick !== undefined) ||
+    //   (this.props.validate &&
+    //     ((this[this.props.steps[this.state.currentStep].stepId].isValidated !==
+    //       undefined &&
+    //       this[
+    //         this.props.steps[this.state.currentStep].stepId
+    //       ].isValidated()) ||
+    //       this[this.props.steps[this.state.currentStep].stepId].isValidated ===
+    //         undefined) &&
+    //     this.props.finishButtonClick !== undefined)
+    // ) {
+    this.setState(
+      {
+        allStates: {
+          ...this.state.allStates,
+          [this.props.steps[this.state.currentStep].stepId]: this[
             this.props.steps[this.state.currentStep].stepId
-          ].isValidated()) ||
-          this[this.props.steps[this.state.currentStep].stepId].isValidated ===
-            undefined) &&
-        this.props.finishButtonClick !== undefined)
-    ) {
-      this.setState(
-        {
-          allStates: {
-            ...this.state.allStates,
-            [this.props.steps[this.state.currentStep].stepId]: this[
-              this.props.steps[this.state.currentStep].stepId
-            ].sendState(),
-          },
+          ].sendState(),
         },
-        () => {
-          this.props.finishButtonClick(this.state.allStates);
-        },
-      );
-    }
+      },
+      () => {
+        this.props.finishButtonClick(this.state.allStates);
+      },
+    );
+    // }
   }
 
   refreshAnimation(index) {
@@ -342,11 +327,11 @@ Wizard.defaultProps = {
 };
 
 Wizard.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
   steps: PropTypes.arrayOf(
     PropTypes.shape({
       stepName: PropTypes.string.isRequired,
-      stepComponent: PropTypes.object.isRequired,
+      stepComponent: PropTypes.func.isRequired,
       stepId: PropTypes.string.isRequired,
     }),
   ).isRequired,

@@ -1,14 +1,16 @@
 import React from 'react';
 
 // core components
-import Wizard from 'components/Wizard/Wizard.js';
-import GridContainer from 'components/Grid/GridContainer.js';
-import GridItem from 'components/Grid/GridItem.js';
+import Wizard from '@/components/Wizard/Wizard';
+import GridContainer from '@/components/Grid/GridContainer';
+import GridItem from '@/components/Grid/GridItem';
 
-import Step1 from './WizardSteps/Step1.js';
-import Step2 from './WizardSteps/Step2.js';
+import Step1 from './WizardSteps/Step1';
+import Step2 from './WizardSteps/Step2';
 
 export default function WizardView() {
+  const finishButtonClick = (form) => {};
+
   return (
     <GridContainer justify="center">
       <GridItem xs={12} sm={8}>
@@ -22,8 +24,8 @@ export default function WizardView() {
               stepId: 'pagamento',
             },
           ]}
-          title="Build Your Profile"
-          subtitle="This information will let us know more about you."
+          title="Associe-se"
+          subtitle=""
           finishButtonClick={(e) => alert(e)}
         />
       </GridItem>

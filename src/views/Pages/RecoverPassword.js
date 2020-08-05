@@ -5,9 +5,6 @@ import { useHistory, useParams } from 'react-router-dom';
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Icon from '@material-ui/core/Icon';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 // @material-ui/icons
@@ -21,12 +18,11 @@ import GridContainer from '@/components/Grid/GridContainer';
 import GridItem from '@/components/Grid/GridItem';
 import Button from '@/components/CustomButtons/Button';
 import CustomInput from '@/components/CustomInput/CustomInput';
-import InfoArea from '@/components/InfoArea/InfoArea';
 import Card from '@/components/Card/Card';
 import CardBody from '@/components/Card/CardBody';
 
 import styles from '@/assets/jss/material-dashboard-pro-react/views/registerPageStyle';
-import { login } from '../../services/auth';
+// import { login } from '../../services/auth';
 import api from '../../services/api';
 
 const useStyles = makeStyles(styles);

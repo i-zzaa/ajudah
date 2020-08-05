@@ -33,6 +33,7 @@ module.exports = {
     'react/prop-types': 'off',
     'no-param-reassign': 'off',
     'no-console': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
   },
   settings: {
     'import/resolver': {
