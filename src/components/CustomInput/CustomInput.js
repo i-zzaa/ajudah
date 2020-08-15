@@ -29,6 +29,7 @@ export default function CustomInput(props) {
     helperText,
     onChange,
     onFocus,
+    onBlur,
   } = props;
 
   const labelClasses = classNames({
@@ -70,19 +71,17 @@ export default function CustomInput(props) {
 
   const handleChange = (e) => {
     e.preventDefault();
-    // switch (type) {
-    //   case 'email':
-    //     setValidator(IsEmail(e.target.value) || e.target.value === '');
-    //     break;
-    //   default:
-    // }
-
     if (onChange) onChange(e);
   };
 
   const handleFocus = (e) => {
     e.preventDefault();
     if (onFocus) onFocus(e);
+  };
+
+  const handleBlur = (e) => {
+    e.preventDefault();
+    if (onBlur) onBlur(e);
   };
 
   return (
@@ -108,6 +107,7 @@ export default function CustomInput(props) {
         inputProps={newInputProps}
         onChange={(e) => handleChange(e)}
         onFocus={(e) => handleFocus(e)}
+        onBlur={(e) => handleBlur(e)}
       />
       {helperText !== undefined ? (
         <FormHelperText id={`${id}-text`} className={helpTextClasses}>
@@ -131,4 +131,5 @@ CustomInput.propTypes = {
   helperText: PropTypes.node,
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };

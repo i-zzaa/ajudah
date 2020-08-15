@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 // @material-ui/icons
 import Face from '@material-ui/icons/Face';
-import RecentActors from '@material-ui/icons/RecentActors';
 import CreditCard from '@material-ui/icons/CreditCard';
-import Today from '@material-ui/icons/Today';
 import PictureInPictureAlt from '@material-ui/icons/PictureInPictureAlt';
 
 // @material-ui/core components
@@ -18,6 +15,8 @@ import PictureUpload from '@/components/CustomUpload/PictureUpload';
 import CustomInput from '@/components/CustomInput/CustomInput';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import * as moment from 'moment';
 
 const style = {
   infoText: {
@@ -36,16 +35,21 @@ const useStyles = makeStyles(style);
 
 export default function Step2() {
   const [form, setForm] = useState({
-    numero: '',
-    titular: '',
-    cpf: '',
-    vencimento: '',
-    codigo: '',
-    cvc: '',
-    expiry: '',
+    user_id: JSON.parse(localStorage.getItem('step1'))?.user_id,
+    cvv: '',
     focus: '',
     name: '',
     number: '',
+    validity: '',
+  });
+
+  const [state, setState] = useState({
+    user_id: JSON.parse(localStorage.getItem('step1')),
+    cvv: '',
+    focus: '',
+    name: '',
+    number: '',
+    validity: '',
   });
   const classes = useStyles();
 
@@ -53,18 +57,9 @@ export default function Step2() {
     return form;
   };
 
-  // function that returns true if value is email, false otherwise
-  const verifyEmail = (value) => {
-    const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (emailRex.test(value)) {
-      return true;
-    }
-    return false;
-  };
-
   // function that verifies if a string has a given length or not
   const verifyLength = (value, length) => {
-    if (value.length >= length) {
+    if (value.length >= length[0] && value.length <= length[1]) {
       return true;
     }
     return false;
@@ -74,75 +69,52 @@ export default function Step2() {
     if (!Object.keys(event).length) return;
 
     switch (type) {
-      case 'email':
-        if (verifyEmail(event.target.value)) {
-          setForm({ [`${stateName}State`]: 'success' });
-        } else {
-          setForm({ [`${stateName}State`]: 'error' });
-        }
-        break;
       case 'length':
         if (verifyLength(event.target.value, stateNameEqualTo)) {
-          setForm({ [`${stateName}State`]: 'success' });
+          setState({ ...state, [`${stateName}State`]: 'success' });
         } else {
-          setForm({ [`${stateName}State`]: 'error' });
+          setState({ ...state, [`${stateName}State`]: 'error' });
         }
         break;
       default:
         break;
     }
     setForm({ ...form, [stateName]: event.target.value });
-  };
-
-  const isValidated = () => {
-    if (
-      form.firstnameState === 'success' &&
-      form.lastnameState === 'success' &&
-      form.emailState === 'success'
-    ) {
-      return true;
-    }
-    if (form.firstnameState !== 'success') {
-      setForm({ firstnameState: 'error' });
-    }
-    if (form.lastnameState !== 'success') {
-      setForm({ lastnameState: 'error' });
-    }
-    if (form.emailState !== 'success') {
-      setForm({ emailState: 'error' });
-    }
-
-    return false;
+    localStorage.setItem('step2', JSON.stringify(form));
   };
 
   return (
     <GridContainer justify="center">
       <div id="PaymentForm">
         <Cards
-          cvc={form.cvc}
-          expiry={form.expiry}
+          cvc={form.cvv}
+          expiry={form.validity}
           focused={form.focus}
           name={form.name}
           number={form.number}
         />
       </div>
-      <GridItem xs={12} sm={4}>
+      <GridItem xs={11} sm={4}>
         <CustomInput
-          success={form.numeroState === 'success'}
-          error={form.numeroState === 'error'}
+          success={state.number === 'success'}
+          error={state.number === 'error'}
           labelText={
             <span>
               Número do cartão <small>(obrigatório)</small>
             </span>
           }
-          type="tel"
+          type="number"
           name="number"
           formControlProps={{
             fullWidth: true,
           }}
-          onChange={(e) => setForm({ ...form, number: e.target.value })}
+          onBlur={(e) => {
+            localStorage.setItem('step2', JSON.stringify(form));
+          }}
+          onChange={(event) => change(event, 'number', 'length', [16, 16])}
           onFocus={(e) => setForm({ ...form, focus: 'number' })}
           inputProps={{
+            maxLength: 16,
             name: 'number',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>
@@ -152,8 +124,8 @@ export default function Step2() {
           }}
         />
         <CustomInput
-          success={form.cpfState === 'success'}
-          error={form.cpfState === 'error'}
+          success={state.name === 'success'}
+          error={state.name === 'error'}
           labelText={
             <span>
               Titular do cartão <small>(obrigatório)</small>
@@ -164,7 +136,10 @@ export default function Step2() {
           formControlProps={{
             fullWidth: true,
           }}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onBlur={(e) => {
+            localStorage.setItem('step2', JSON.stringify(form));
+          }}
+          onChange={(event) => change(event, 'name', 'length', [5, 50])}
           onFocus={(e) => setForm({ ...form, focus: 'name' })}
           inputProps={{
             name: 'name',
@@ -175,71 +150,57 @@ export default function Step2() {
             ),
           }}
         />
-
-        <CustomInput
-          success={form.codState === 'success'}
-          error={form.codState === 'error'}
-          labelText={
-            <span>
-              CPF <small>(obrigatório)</small>
-            </span>
-          }
-          id="cpf"
-          onChange={(e) => setForm({ ...form, cpf: e.target.value })}
-          onFocus={(e) => setForm({ ...form, focus: 'cpf' })}
-          formControlProps={{
-            fullWidth: true,
-          }}
-          inputProps={{
-            name: 'cpf',
-            endAdornment: (
-              <InputAdornment position="end" className={classes.inputAdornment}>
-                <RecentActors className={classes.inputAdornmentIcon} />
-              </InputAdornment>
-            ),
-          }}
-        />
       </GridItem>
-      <GridItem xs={12} sm={3}>
-        <CustomInput
-          success={form.vencimentoState === 'success'}
-          error={form.vencimentoState === 'error'}
-          labelText={
+      <GridItem xs={11} sm={3}>
+        <KeyboardDatePicker
+          autoOk
+          style={{ width: '100%' }}
+          variant="inline"
+          format="MM/yyyy"
+          margin="normal"
+          views={['year', 'month']}
+          id="validity"
+          label={
             <span>
               Vencimento <small>(obrigatório)</small>
             </span>
           }
-          id="expiry"
-          formControlProps={{
-            fullWidth: true,
+          value={
+            form.validity
+              ? [form.validity.split('/')[1], form.validity.split('/')[0] - 1]
+              : null
+          }
+          onBlur={(e) => {
+            localStorage.setItem('step2', JSON.stringify(form));
           }}
-          onChange={(e) => setForm({ ...form, expiry: e.target.value })}
-          onFocus={(e) => setForm({ ...form, focus: 'expiry' })}
-          inputProps={{
-            name: 'expiry',
-            endAdornment: (
-              <InputAdornment position="end" className={classes.inputAdornment}>
-                <Today className={classes.inputAdornmentIcon} />
-              </InputAdornment>
-            ),
+          onChange={(e) => {
+            setForm({ ...form, validity: moment(e).format('MM/yyyy') });
+            console.log(form.validity.split('/'));
           }}
+          onFocus={(e) => setForm({ ...form, focus: 'validity' })}
         />
+
         <CustomInput
-          success={form.titularState === 'success'}
-          error={form.titularState === 'error'}
+          success={state.cvc === 'success'}
+          error={state.cvc === 'error'}
           labelText={
             <span>
               Código do cartão <small>(obrigatório)</small>
             </span>
           }
           id="cvc"
-          onChange={(e) => setForm({ ...form, cvc: e.target.value })}
+          onBlur={(e) => {
+            localStorage.setItem('step2', JSON.stringify(form));
+          }}
+          onChange={(event) => change(event, 'cvv', 'length', [3, 3])}
           onFocus={(e) => setForm({ ...form, focus: 'cvc' })}
           formControlProps={{
             fullWidth: true,
             name: 'cvc',
           }}
           inputProps={{
+            style: { marginTop: 3 },
+            maxLength: 3,
             name: 'cvc',
             endAdornment: (
               <InputAdornment position="end" className={classes.inputAdornment}>

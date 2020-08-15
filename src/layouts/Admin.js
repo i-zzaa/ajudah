@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import cx from 'classnames';
 import { Switch, Route, Redirect } from 'react-router-dom';
 // creates a beautiful scrollbar
@@ -9,44 +9,49 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import { makeStyles } from '@material-ui/core/styles';
 
 // core components
-import AdminNavbar from 'components/Navbars/AdminNavbar.js';
-import Footer from 'components/Footer/Footer.js';
-import Sidebar from 'components/Sidebar/Sidebar.js';
-import FixedPlugin from 'components/FixedPlugin/FixedPlugin.js';
+import AdminNavbar from '@/components/Navbars/AdminNavbar';
+import Footer from '@/components/Footer/Footer';
+import Sidebar from '@/components/Sidebar/Sidebar';
+import FixedPlugin from '@/components/FixedPlugin/FixedPlugin';
 
-import routes from 'routes.js';
+import routes from '@/routes';
 
-import styles from 'assets/jss/material-dashboard-pro-react/layouts/adminStyle.js';
+import styles from '@/assets/jss/material-dashboard-pro-react/layouts/adminStyle';
 
-var ps;
+let ps;
 
 const useStyles = makeStyles(styles);
 
 export default function Dashboard(props) {
   const { ...rest } = props;
   // states and functions
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [miniActive, setMiniActive] = React.useState(false);
-  const [image, setImage] = React.useState(require('assets/img/sidebar-2.jpg'));
-  const [color, setColor] = React.useState('blue');
-  const [bgColor, setBgColor] = React.useState('black');
-  // const [hasImage, setHasImage] = React.useState(true);
-  const [fixedClasses, setFixedClasses] = React.useState('dropdown');
-  const [logo, setLogo] = React.useState(require('assets/img/logo-white.svg'));
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [miniActive, setMiniActive] = useState(false);
+  const [image, setImage] = useState(require('@/assets/img/sidebar-2.jpg'));
+  const [color, setColor] = useState('blue');
+  const [bgColor, setBgColor] = useState('black');
+  // const [hasImage, setHasImage] = useState(true);
+  const [fixedClasses, setFixedClasses] = useState('dropdown');
+  const [logo, setLogo] = useState(require('@/assets/img/logo-white.svg'));
   // styles
-  const classes = useStyles();
-  const mainPanelClasses =
-    classes.mainPanel +
-    ' ' +
-    cx({
-      [classes.mainPanelSidebarMini]: miniActive,
-      [classes.mainPanelWithPerfectScrollbar]:
-        navigator.platform.indexOf('Win') > -1,
-    });
+
   // ref for main panel div
-  const mainPanel = React.createRef();
+  const mainPanel = createRef();
+  const classes = useStyles();
+  const mainPanelClasses = `${classes.mainPanel} ${cx({
+    [classes.mainPanelSidebarMini]: miniActive,
+    [classes.mainPanelWithPerfectScrollbar]:
+      navigator.platform.indexOf('Win') > -1,
+  })}`;
+
+  const resizeFunction = () => {
+    if (window.innerWidth >= 960) {
+      setMobileOpen(false);
+    }
+  };
+
   // effect instead of componentDidMount, componentDidUpdate and componentWillUnmount
-  React.useEffect(() => {
+  useEffect(() => {
     if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
@@ -74,10 +79,10 @@ export default function Dashboard(props) {
   const handleBgColorClick = (bgColor) => {
     switch (bgColor) {
       case 'white':
-        setLogo(require('assets/img/logo.svg'));
+        setLogo(require('@/assets/img/logo.svg'));
         break;
       default:
-        setLogo(require('assets/img/logo-white.svg'));
+        setLogo(require('@/assets/img/logo-white.svg'));
         break;
     }
     setBgColor(bgColor);
@@ -96,19 +101,17 @@ export default function Dashboard(props) {
     return window.location.pathname !== '/admin/full-screen-maps';
   };
   const getActiveRoute = (routes) => {
-    let activeRoute = 'Default Brand Text';
+    const activeRoute = 'Default Brand Text';
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
-        let collapseActiveRoute = getActiveRoute(routes[i].views);
+        const collapseActiveRoute = getActiveRoute(routes[i].views);
         if (collapseActiveRoute !== activeRoute) {
           return collapseActiveRoute;
         }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].name;
-        }
+      } else if (
+        window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+      ) {
+        return routes[i].name;
       }
     }
     return activeRoute;
@@ -126,25 +129,19 @@ export default function Dashboard(props) {
             key={key}
           />
         );
-      } else {
-        return null;
       }
+      return null;
     });
   };
   const sidebarMinimize = () => {
     setMiniActive(!miniActive);
-  };
-  const resizeFunction = () => {
-    if (window.innerWidth >= 960) {
-      setMobileOpen(false);
-    }
   };
 
   return (
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes.filter((route) => !!route.sidebar)}
-        logoText={'Ajudah'}
+        logoText="Ajudah"
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

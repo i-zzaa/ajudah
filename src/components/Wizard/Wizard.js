@@ -100,14 +100,14 @@ class Wizard extends React.Component {
   }
 
   nextButtonClick() {
-    // this.setState({
-    //   allStates: {
-    //     ...this.state.allStates,
-    //     [this.props.steps[this.state.currentStep].stepId]: this[
-    //       this.props.steps[this.state.currentStep].stepId
-    //     ],
-    //   },
-    // });
+    this.setState({
+      allStates: {
+        ...this.state.allStates,
+        [this.props.steps[this.state.currentStep].stepId]: this[
+          this.props.steps[this.state.currentStep].stepId
+        ],
+      },
+    });
 
     const key = this.state.currentStep + 1;
     this.setState({
@@ -117,6 +117,7 @@ class Wizard extends React.Component {
       finishButton: this.props.steps.length === key + 1,
     });
     this.refreshAnimation(key);
+    this.props.nextButtonClick(this.state);
   }
 
   previousButtonClick() {
@@ -159,19 +160,8 @@ class Wizard extends React.Component {
     //         undefined) &&
     //     this.props.finishButtonClick !== undefined)
     // ) {
-    this.setState(
-      {
-        allStates: {
-          ...this.state.allStates,
-          [this.props.steps[this.state.currentStep].stepId]: this[
-            this.props.steps[this.state.currentStep].stepId
-          ].sendState(),
-        },
-      },
-      () => {
-        this.props.finishButtonClick(this.state.allStates);
-      },
-    );
+    console.log('gjhkuhkhkuhkh');
+    this.props.finishButtonClick(this.state.allStates);
     // }
   }
 
@@ -239,7 +229,7 @@ class Wizard extends React.Component {
                     style={{ width: this.state.width }}
                   >
                     <a
-                      href="#pablo"
+                      href={`#${prop.stepId}`}
                       className={classes.stepsAnchor}
                       onClick={(e) => {
                         e.preventDefault();

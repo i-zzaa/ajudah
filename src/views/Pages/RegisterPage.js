@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
@@ -23,64 +23,74 @@ const useStyles = makeStyles(styles);
 export default function RegisterPage() {
   const classes = useStyles();
   const history = useHistory();
-  const [alert, setAlert] = React.useState(null);
-
-  const [forms, setForms] = useState({
-    username: '',
-    email: '',
-    cpf: '',
-    rg: '',
-    password: '',
-  });
+  const [alert, setAlert] = useState(null);
+  const [validate, setValidate] = useState(false);
 
   const hideAlert = () => {
     setAlert(null);
   };
+  const onSubmit = async (form) => {
+    try {
+      const response = await api.post('/register', form);
 
-  const onSubmit = async (e, form) => {
-    setForms(form);
-    e.preventDefault();
-
-    const formVazio = await Object.values(forms).filter((value) => !value);
-
-    console.log(formVazio);
-
-    if (!formVazio.length) {
-      try {
-        const response = await api.post('/users', forms);
-
-        if (!response) return;
-
-        setAlert(
-          <SweetAlert
-            success
-            style={{ display: 'block', marginTop: '-100px' }}
-            title="Cadastro criado!"
-            onConfirm={() => {
-              hideAlert();
-              history.push('/auth/login-page');
-            }}
-            onCancel={() => hideAlert()}
-            confirmBtnCssClass={`${classes.button} ${classes.success}`}
-          >
-            Você será direcinado o login
-          </SweetAlert>,
-        );
-      } catch (error) {
-        setAlert(
-          <SweetAlert
-            error
-            style={{ display: 'block', marginTop: '-100px' }}
-            title="Algo deu errado =("
-            onConfirm={() => {
-              hideAlert();
-            }}
-            confirmBtnCssClass={`${classes.button} ${classes.error}`}
-          >
-            Tente novamente
-          </SweetAlert>,
+      if (response.data.success) {
+        localStorage.setItem(
+          'step1',
+          JSON.stringify({ user_id: response.data.user.id }),
         );
       }
+    } catch (error) {
+      setAlert(
+        <SweetAlert
+          error
+          style={{ display: 'block', marginTop: '-100px' }}
+          title="Algo deu errado =("
+          onConfirm={() => {
+            hideAlert();
+          }}
+          confirmBtnCssClass={`${classes.button} ${classes.error}`}
+        >
+          Tente novamente
+        </SweetAlert>,
+      );
+    }
+  };
+
+  const onSubmitPay = async (form) => {
+    try {
+      const response = await api.post('/register/pay', form);
+
+      setAlert(
+        <SweetAlert
+          success
+          style={{ display: 'block', marginTop: '-100px' }}
+          title="Cadastro criado!"
+          onConfirm={() => {
+            hideAlert();
+            localStorage.removeItem('step2');
+
+            history.push('/auth/login-page');
+          }}
+          onCancel={() => hideAlert()}
+          confirmBtnCssClass={`${classes.button} ${classes.success}`}
+        >
+          Você será direcinado o login
+        </SweetAlert>,
+      );
+    } catch (error) {
+      setAlert(
+        <SweetAlert
+          error
+          style={{ display: 'block', marginTop: '-100px' }}
+          title="Algo deu errado =("
+          onConfirm={() => {
+            hideAlert();
+          }}
+          confirmBtnCssClass={`${classes.button} ${classes.error}`}
+        >
+          Tente novamente
+        </SweetAlert>,
+      );
     }
   };
 
@@ -104,11 +114,35 @@ export default function RegisterPage() {
             ]}
             title="Associe-se"
             subtitle=""
-            finishButtonClick={(e, form) => onSubmit(e, form)}
-            classes
-            previousButtonText="Anterior"
             nextButtonText="Próximo"
+            previousButtonText="Anterior"
             finishButtonText="Enviar"
+            nextButtonClick={(e) => {
+              console.log(e);
+              const validateStep1 = JSON.parse(localStorage.getItem('step1'));
+
+              const valid = Object.values(validateStep1).filter(
+                (value) => !value,
+              );
+              if (valid.length === 0) {
+                e.allStates = validateStep1;
+                onSubmit(validateStep1);
+                setValidate(true);
+              }
+            }}
+            finishButtonClick={(e) => {
+              console.log(e);
+              const validateStep2 = JSON.parse(localStorage.getItem('step2'));
+
+              const valid = Object.values(validateStep2).filter(
+                (value) => !value,
+              );
+              if (valid.length === 0) {
+                e.allStates = validateStep2;
+                onSubmitPay(validateStep2);
+                setValidate(true);
+              }
+            }}
           />
         </GridItem>
       </GridContainer>

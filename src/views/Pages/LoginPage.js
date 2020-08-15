@@ -1,7 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import { login } from '../../services/auth';
+import { useHistory } from 'react-router-dom';
 
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,10 +8,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Icon from '@material-ui/core/Icon';
 
 // @material-ui/icons
-import Face from '@material-ui/icons/Face';
 import Email from '@material-ui/icons/Email';
 import AddAlert from '@material-ui/icons/AddAlert';
-import Close from '@material-ui/icons/Close';
+import { login } from '../../services/auth';
+import api from '../../services/api';
 // import LockOutline from "@material-ui/icons/LockOutline";
 
 // core components
@@ -35,7 +34,7 @@ export default function LoginPage() {
   const [tr, setTR] = React.useState(false);
   const [cardAnimaton, setCardAnimation] = useState('cardHidden');
   const [notification, setNotification] = useState({
-    type: '',
+    type: 'success',
     message: '',
   });
   const [forms, setForms] = useState({
@@ -77,7 +76,7 @@ export default function LoginPage() {
         });
         showNotification('tr');
 
-        login(response.data.token);
+        login(response.data.success.toke);
         history.push('/admin/dashboard');
       } catch (err) {
         setNotification({

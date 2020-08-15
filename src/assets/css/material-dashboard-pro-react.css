@@ -3451,7 +3451,6 @@ img {
 .fixed-plugin .clearfix::after {
   clear: both;
 }
-
 @media (max-width: 991px) {
   .fixed-plugin .dropdown-menu {
     right: 81px;
