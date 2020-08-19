@@ -76,8 +76,8 @@ export default function LoginPage() {
         });
         showNotification('tr');
 
-        login(response.data.success.toke);
-        history.push('/admin/dashboard');
+        login(response.data.success.token);
+        history.push('/admin');
       } catch (err) {
         setNotification({
           type: 'rose',
@@ -152,13 +152,7 @@ export default function LoginPage() {
                   }}
                 />
                 <span className={classes.right}>
-                  <a
-                    href="#"
-                    onClick={() => history.push('/auth/recover-password-page')}
-                  >
-                    Esqueceu a senha?
-                  </a>
-                  .
+                  <a href="/auth/recover-password-page">Esqueceu a senha?</a>.
                 </span>
               </CardBody>
               <CardFooter className={classes.justifyContentCenter}>

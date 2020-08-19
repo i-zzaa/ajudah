@@ -113,7 +113,11 @@ export default function RegisterPage() {
               },
             ]}
             title="Associe-se"
-            subtitle=""
+            subtitle={
+              <span className={classes.right}>
+                <a href="/auth/login-page">Já possui login?</a>
+              </span>
+            }
             nextButtonText="Próximo"
             previousButtonText="Anterior"
             finishButtonText="Enviar"

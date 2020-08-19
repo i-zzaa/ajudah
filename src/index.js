@@ -19,7 +19,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
       isAuthenticated() ? (
         <Component {...props} />
       ) : (
-        <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+        <Redirect
+          to={{ pathname: '/auth/login-page', state: { from: props.location } }}
+        />
       )
     }
   />
@@ -31,8 +33,8 @@ ReactDOM.render(
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <Route path="/auth" component={AuthLayout} />
         <PrivateRoute path="/admin" component={AdminLayout} />
-        <Redirect from="/" to="/auth/login-page" />
-        <Route path="*" component={() => <h1>Page not found</h1>} />
+        <Redirect from="/" to="/admin" />
+        <Route path="*" component={AuthLayout} />
       </MuiPickersUtilsProvider>
     </Switch>
   </Router>,

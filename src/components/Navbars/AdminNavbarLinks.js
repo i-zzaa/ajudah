@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 // import { Manager, Target, Popper } from "react-popper";
 
 import { useHistory } from 'react-router-dom';
-import { logout } from '../../services/auth';
 
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,6 +27,7 @@ import CustomInput from 'components/CustomInput/CustomInput.js';
 import Button from 'components/CustomButtons/Button.js';
 
 import styles from 'assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js';
+import { logout } from '../../services/auth';
 
 const useStyles = makeStyles(styles);
 
@@ -55,19 +55,14 @@ export default function HeaderLinks(props) {
   const handleCloseProfile = () => {
     setOpenProfile(null);
     logout();
-    history.push('/');
+    history.push('/auth/login-page');
   };
 
   const classes = useStyles();
   const { rtlActive } = props;
-  const searchButton =
-    classes.top +
-    ' ' +
-    classes.searchButton +
-    ' ' +
-    classNames({
-      [classes.searchRTL]: rtlActive,
-    });
+  const searchButton = `${classes.top} ${classes.searchButton} ${classNames({
+    [classes.searchRTL]: rtlActive,
+  })}`;
   const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover, {
     [classes.dropdownItemRTL]: rtlActive,
   });
@@ -93,13 +88,9 @@ export default function HeaderLinks(props) {
           }}
         >
           <Notifications
-            className={
-              classes.headerLinksSvg +
-              ' ' +
-              (rtlActive
-                ? classes.links + ' ' + classes.linksRTL
-                : classes.links)
-            }
+            className={`${classes.headerLinksSvg} ${
+              rtlActive ? `${classes.links} ${classes.linksRTL}` : classes.links
+            }`}
           />
           <span className={classes.notifications}>5</span>
           <Hidden mdUp implementation="css">
@@ -190,13 +181,9 @@ export default function HeaderLinks(props) {
           }}
         >
           <Person
-            className={
-              classes.headerLinksSvg +
-              ' ' +
-              (rtlActive
-                ? classes.links + ' ' + classes.linksRTL
-                : classes.links)
-            }
+            className={`${classes.headerLinksSvg} ${
+              rtlActive ? `${classes.links} ${classes.linksRTL}` : classes.links
+            }`}
           />
           <Hidden mdUp implementation="css">
             <span onClick={handleClickProfile} className={classes.linkText}>
