@@ -13,6 +13,8 @@ import routes from '@/routes';
 import styles from '@/assets/jss/material-dashboard-pro-react/layouts/authStyle';
 import login from '@/assets/img/background.png';
 import Particles from 'react-particles-js';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const useStyles = makeStyles(styles);
 
@@ -60,39 +62,42 @@ export default function Pages() {
     return activeRoute;
   };
   return (
-    <div>
-      <div className={classes.wrapper} ref={wrapper}>
-        <div
-          className={classes.fullPage}
-          style={{ backgroundImage: `url(${login})` }}
-        >
-          <Particles
-            style={{ position: 'absolute', height: '100%', top: '2%' }}
-            params={{
-              particles: {
-                number: {
-                  value: 50,
-                },
-                size: {
-                  value: 3,
-                },
-              },
-              interactivity: {
-                events: {
-                  onhover: {
-                    enable: true,
-                    mode: 'repulse',
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+      <div>
+        <div className={classes.wrapper} ref={wrapper}>
+          <div
+            className={classes.fullPage}
+            style={{ backgroundImage: `url(${login})` }}
+          >
+            <Particles
+              style={{ position: 'absolute', height: '100%', top: '2%' }}
+              params={{
+                particles: {
+                  number: {
+                    value: 50,
+                  },
+                  size: {
+                    value: 3,
                   },
                 },
-              },
-            }}
-          />
-          <Switch>
-            {getRoutes(routes)} <Redirect from="/auth" to="/auth/login-page" />
-          </Switch>
-          <Footer white />
+                interactivity: {
+                  events: {
+                    onhover: {
+                      enable: true,
+                      mode: 'repulse',
+                    },
+                  },
+                },
+              }}
+            />
+            <Switch>
+              {getRoutes(routes)}{' '}
+              <Redirect from="/auth" to="/auth/login-page" />
+            </Switch>
+            <Footer white />
+          </div>
         </div>
       </div>
-    </div>
+    </MuiPickersUtilsProvider>
   );
 }

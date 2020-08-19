@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import MomentUtils from '@date-io/moment';
+
 import { isAuthenticated } from './services/auth';
 import AuthLayout from './layouts/Auth';
 import AdminLayout from './layouts/Admin';
@@ -30,12 +29,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <Route path="/auth" component={AuthLayout} />
-        <PrivateRoute path="/admin" component={AdminLayout} />
-        <Redirect from="/" to="/admin" />
-        <Route path="*" component={AuthLayout} />
-      </MuiPickersUtilsProvider>
+      <Route path="/auth" component={AuthLayout} />
+      <PrivateRoute path="/admin" component={AdminLayout} />
+      <Redirect from="/" to="/admin" />
+      <Route path="*" component={AuthLayout} />
     </Switch>
   </Router>,
   document.getElementById('root'),
