@@ -17,9 +17,6 @@ import GridContainer from '@/components/Grid/GridContainer';
 import GridItem from '@/components/Grid/GridItem';
 import CustomInput from '@/components/CustomInput/CustomInput';
 import MaskedInput from 'react-text-mask';
-import api from '@/services/api';
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { useHistory } from 'react-router-dom';
 import * as moment from 'moment';
 
 const style = {
@@ -80,7 +77,7 @@ const TextMaskRG = (props) => {
   );
 };
 
-export default function Step1() {
+export default function Step1({ valid }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -91,7 +88,7 @@ export default function Step1() {
     siap: '',
     password: '',
   });
-  const [state, setState] = useState({
+  const [state, setStates] = useState({
     name: '',
     email: '',
     cpf: '',
@@ -102,9 +99,6 @@ export default function Step1() {
     password: '',
   });
   const classes = useStyles();
-
-  const history = useHistory();
-  const [alert, setAlert] = React.useState(null);
 
   // function that returns true if value is email, false otherwise
   const verifyEmail = (value) => {
@@ -135,33 +129,33 @@ export default function Step1() {
       state.password === 'success'
     ) {
       // onSubmit(form);
-    } else {
-      if (state.name !== 'success') {
-        setState({ ...state, name: 'error' });
-      }
-      if (state.email !== 'success') {
-        setState({ ...state, email: 'error' });
-      }
-      if (state.cpf !== 'success') {
-        setState({ ...state, cpf: 'error' });
-      }
-      if (state.rg !== 'success') {
-        setState({ ...state, rg: 'error' });
-      }
-      if (state.date_birth !== 'success') {
-        setState({ ...state, date_birth: 'error' });
-      }
-      if (state.matricula !== 'success') {
-        setState({ ...state, matricula: 'error' });
-      }
-      if (state.siap !== 'success') {
-        setState({ ...state, siap: 'error' });
-      }
-      if (state.password !== 'success') {
-        setState({ ...state, password: 'error' });
-      }
-      return false;
+      return true;
     }
+    if (state.name !== 'success') {
+      setStates({ ...state, name: 'error' });
+    }
+    if (state.email !== 'success') {
+      setStates({ ...state, email: 'error' });
+    }
+    if (state.cpf !== 'success') {
+      setStates({ ...state, cpf: 'error' });
+    }
+    if (state.rg !== 'success') {
+      setStates({ ...state, rg: 'error' });
+    }
+    if (state.date_birth !== 'success') {
+      setStates({ ...state, date_birth: 'error' });
+    }
+    if (state.matricula !== 'success') {
+      setStates({ ...state, matricula: 'error' });
+    }
+    if (state.siap !== 'success') {
+      setStates({ ...state, siap: 'error' });
+    }
+    if (state.password !== 'success') {
+      setStates({ ...state, password: 'error' });
+    }
+    return false;
   };
 
   const isValidatedInd = (value) => {
@@ -179,20 +173,20 @@ export default function Step1() {
     switch (type) {
       case 'email':
         if (verifyEmail(event.target.value)) {
-          setState({ ...state, [`${stateName}`]: 'success' });
+          setStates({ ...state, [`${stateName}`]: 'success' });
         } else {
-          setState({ ...state, [`${stateName}`]: 'error' });
+          setStates({ ...state, [`${stateName}`]: 'error' });
         }
         break;
       case 'length':
         if (verifyLength(event.target.value, stateNameEqualTo)) {
-          setState({ ...state, [`${stateName}`]: 'success' });
+          setStates({ ...state, [`${stateName}`]: 'success' });
         } else {
-          setState({ ...state, [`${stateName}`]: 'error' });
+          setStates({ ...state, [`${stateName}`]: 'error' });
         }
         break;
       case 'date':
-        setState({ ...state, [`${stateName}`]: 'success' });
+        setStates({ ...state, [`${stateName}`]: 'success' });
         setForm({
           ...form,
           [`${stateName}`]: moment(event).format('YYYY-MM-DD'),
@@ -205,6 +199,12 @@ export default function Step1() {
     if (type !== 'date') setForm({ ...form, [stateName]: event.target.value });
     isValidatedInd(stateName);
   };
+
+  useEffect(() => {
+    if (valid) {
+      isValidated();
+    }
+  }, [valid]);
 
   return (
     <GridContainer justify="center">
@@ -222,7 +222,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'name', 'length', [5, 256])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -246,7 +246,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'cpf', 'length', [14, 14])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -260,13 +260,16 @@ export default function Step1() {
         />
         <KeyboardDatePicker
           autoOk
-          style={{ width: '100%' }}
+          style={{
+            width: '100%',
+            borderBottom: '#b6b6b6',
+          }}
           variant="inline"
           format="DD/MM/yyyy"
           margin="normal"
           id="date-picker-inline"
           label={
-            <span>
+            <span style={{ color: '#b6b6b6' }}>
               Data de nascimento <small>(obrigatório)</small>
             </span>
           }
@@ -274,7 +277,7 @@ export default function Step1() {
           onChange={(value) => {
             change(value, 'date_birth', 'date');
           }}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           KeyboardButtonProps={{
@@ -294,7 +297,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'siap', 'length', [6, 6])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -320,7 +323,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'email', 'email')}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -344,7 +347,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'rg', 'length', [10, 10])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -369,7 +372,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'matricula', 'length', [6, 256])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{
@@ -393,7 +396,7 @@ export default function Step1() {
             fullWidth: true,
           }}
           onChange={(event) => change(event, 'password', 'length', [6, 256])}
-          onBlur={(e) => {
+          onBlur={() => {
             localStorage.setItem('step1', JSON.stringify(form));
           }}
           inputProps={{

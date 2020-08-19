@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -5,22 +8,15 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 // core components
-import AuthNavbar from 'components/Navbars/AuthNavbar.js';
-import Footer from 'components/Footer/Footer.js';
-
-import routes from 'routes.js';
-
-import styles from 'assets/jss/material-dashboard-pro-react/layouts/authStyle.js';
-
-import register from 'assets/img/register.jpeg';
-import login from 'assets/img/background.png';
-import error from 'assets/img/clint-mckoy.jpg';
+import Footer from '@/components/Footer/Footer';
+import routes from '@/routes';
+import styles from '@/assets/jss/material-dashboard-pro-react/layouts/authStyle';
+import login from '@/assets/img/background.png';
 import Particles from 'react-particles-js';
 
 const useStyles = makeStyles(styles);
 
-export default function Pages(props) {
-  const { ...rest } = props;
+export default function Pages() {
   // ref for the wrapper div
   const wrapper = React.createRef();
   // styles

@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // core components
 import Button from '@/components/CustomButtons/Button';
 import Card from '@/components/Card/Card';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 import wizardStyle from '@/assets/jss/material-dashboard-pro-react/components/wizardStyle';
 
@@ -29,6 +30,8 @@ class Wizard extends React.Component {
       width = `${100 / 3}%`;
     }
     this.state = {
+      valid: false,
+      alert: null,
       currentStep: 0,
       color: this.props.color,
       nextButton: this.props.steps.length > 1,
@@ -63,25 +66,51 @@ class Wizard extends React.Component {
     this.refreshAnimation(this.state.currentStep);
   }
 
+  validarCampos(step) {
+    debugger;
+
+    const validateStep = JSON.parse(
+      localStorage.getItem(`step${step + 1}`),
+    ) || {
+      0: '',
+    };
+
+    const valid = Object.values(validateStep).filter(
+      (value) => !value || value === '',
+    );
+
+    if (valid.length === 0) {
+      localStorage.getItem(`validation${step + 1}`, 'true');
+
+      return true;
+    }
+    localStorage.getItem(`validation${step + 1}`, 'false');
+
+    this.setState({
+      ...this.state,
+      valid: true,
+      alert: (
+        <SweetAlert
+          error
+          style={{ display: 'block', marginTop: '-100px' }}
+          title="Preencha todos os campos obrigatórios"
+          onConfirm={() => {
+            this.hideAlert();
+          }}
+        />
+      ),
+    });
+
+    return false;
+  }
+
   navigationStepChange(key) {
-    if (this.props.steps) {
+    debugger;
+    if (this.props.steps && this.validarCampos(this.state.currentStep)) {
       let validationState = true;
       if (key > this.state.currentStep) {
         for (let i = this.state.currentStep; i < key; i++) {
-          if (this[this.props.steps[i].stepId].sendState !== undefined) {
-            this.setState({
-              allStates: {
-                ...this.state.allStates,
-                [this.props.steps[i].stepId]: this[
-                  this.props.steps[i].stepId
-                ].sendState(),
-              },
-            });
-          }
-          if (
-            this[this.props.steps[i].stepId].isValidated !== undefined &&
-            this[this.props.steps[i].stepId].isValidated() === false
-          ) {
+          if (this.props.steps[i].validate === false) {
             validationState = false;
             break;
           }
@@ -99,7 +128,12 @@ class Wizard extends React.Component {
     }
   }
 
+  hideAlert() {
+    this.setState({ ...this.state, alert: null });
+  }
+
   nextButtonClick() {
+    const validationState = true;
     this.setState({
       allStates: {
         ...this.state.allStates,
@@ -109,15 +143,21 @@ class Wizard extends React.Component {
       },
     });
 
-    const key = this.state.currentStep + 1;
-    this.setState({
-      currentStep: key,
-      nextButton: this.props.steps.length > key + 1,
-      previousButton: key > 0,
-      finishButton: this.props.steps.length === key + 1,
-    });
-    this.refreshAnimation(key);
-    this.props.nextButtonClick(this.state);
+    if (this.validarCampos(this.state.currentStep)) {
+      localStorage.getItem('validation1', 'true');
+
+      const key = this.state.currentStep + 1;
+      this.setState({
+        ...this.state,
+        valid: false,
+        currentStep: key,
+        nextButton: this.props.steps.length > key + 1,
+        previousButton: key > 0,
+        finishButton: this.props.steps.length === key + 1,
+      });
+      this.refreshAnimation(key);
+      this.props.nextButtonClick(this.state);
+    }
   }
 
   previousButtonClick() {
@@ -147,22 +187,9 @@ class Wizard extends React.Component {
   }
 
   finishButtonClick() {
-    // if (
-    //   (this.props.validate === false &&
-    //     this.props.finishButtonClick !== undefined) ||
-    //   (this.props.validate &&
-    //     ((this[this.props.steps[this.state.currentStep].stepId].isValidated !==
-    //       undefined &&
-    //       this[
-    //         this.props.steps[this.state.currentStep].stepId
-    //       ].isValidated()) ||
-    //       this[this.props.steps[this.state.currentStep].stepId].isValidated ===
-    //         undefined) &&
-    //     this.props.finishButtonClick !== undefined)
-    // ) {
-    console.log('gjhkuhkhkuhkh');
-    this.props.finishButtonClick(this.state.allStates);
-    // }
+    if (this.validarCampos(this.state.currentStep)) {
+      this.props.finishButtonClick(this.state.allStates);
+    }
   }
 
   refreshAnimation(index) {
@@ -260,6 +287,7 @@ class Wizard extends React.Component {
                   <prop.stepComponent
                     innerRef={(node) => (this[prop.stepId] = node)}
                     allStates={this.state.allStates}
+                    valid={this.state.valid}
                   />
                 </div>
               );
@@ -298,6 +326,7 @@ class Wizard extends React.Component {
             </div>
             <div className={classes.clearfix} />
           </div>
+          {this.state.alert}
         </Card>
       </div>
     );

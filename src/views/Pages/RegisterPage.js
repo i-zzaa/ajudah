@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
@@ -24,7 +24,6 @@ export default function RegisterPage() {
   const classes = useStyles();
   const history = useHistory();
   const [alert, setAlert] = useState(null);
-  const [validate, setValidate] = useState(false);
 
   const hideAlert = () => {
     setAlert(null);
@@ -34,10 +33,7 @@ export default function RegisterPage() {
       const response = await api.post('/register', form);
 
       if (response.data.success) {
-        localStorage.setItem(
-          'step1',
-          JSON.stringify({ user_id: response.data.user.id }),
-        );
+        localStorage.setItem('user_id', JSON.stringify(response.data.user.id));
       }
     } catch (error) {
       setAlert(
@@ -60,6 +56,8 @@ export default function RegisterPage() {
     try {
       const response = await api.post('/register/pay', form);
 
+      if (!response.data.success) return false;
+
       setAlert(
         <SweetAlert
           success
@@ -77,6 +75,7 @@ export default function RegisterPage() {
           Você será direcinado o login
         </SweetAlert>,
       );
+      return true;
     } catch (error) {
       setAlert(
         <SweetAlert
@@ -92,6 +91,7 @@ export default function RegisterPage() {
         </SweetAlert>,
       );
     }
+    return true;
   };
 
   return (
@@ -117,31 +117,13 @@ export default function RegisterPage() {
             nextButtonText="Próximo"
             previousButtonText="Anterior"
             finishButtonText="Enviar"
-            nextButtonClick={(e) => {
-              console.log(e);
+            nextButtonClick={() => {
               const validateStep1 = JSON.parse(localStorage.getItem('step1'));
-
-              const valid = Object.values(validateStep1).filter(
-                (value) => !value,
-              );
-              if (valid.length === 0) {
-                e.allStates = validateStep1;
-                onSubmit(validateStep1);
-                setValidate(true);
-              }
+              onSubmit(validateStep1);
             }}
-            finishButtonClick={(e) => {
-              console.log(e);
+            finishButtonClick={() => {
               const validateStep2 = JSON.parse(localStorage.getItem('step2'));
-
-              const valid = Object.values(validateStep2).filter(
-                (value) => !value,
-              );
-              if (valid.length === 0) {
-                e.allStates = validateStep2;
-                onSubmitPay(validateStep2);
-                setValidate(true);
-              }
+              onSubmitPay(validateStep2);
             }}
           />
         </GridItem>

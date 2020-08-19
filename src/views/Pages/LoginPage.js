@@ -89,6 +89,8 @@ export default function LoginPage() {
   };
 
   React.useEffect(() => {
+    localStorage.clear();
+
     const id = setTimeout(() => {
       setCardAnimation('');
     }, 700);
