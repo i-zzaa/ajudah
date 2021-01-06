@@ -9,7 +9,7 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@types/gulp": "^4.0.6",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "history": "4.10.1",
